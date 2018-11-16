@@ -27,7 +27,13 @@
         [signal addObserver:signalGroup forKeyPath:@"result" options:NSKeyValueObservingOptionNew context:(__bridge void * _Nullable)(self.signalsDictionary)];
         signal.task(signal);
     }];
-    
+}
+
+- (void)destructionSignal{
+    for (NSString *key in self.signalsDictionary.allKeys) {
+        [self.signalsDictionary[key] destructionSignal];
+    }
+    [self.signalsDictionary removeAllObjects];
 }
 
 - (NSMutableDictionary *)signalsDictionary{

@@ -52,25 +52,37 @@
         LXSignalGroup *signalGroup = [signalsDictionary objectForKey:[(LXSignal *)object identifier]];
         signalGroup.signalCount -= 1;
         if (signalGroup && signalGroup.signalCount == 0) {
-            NSMethodSignature *methodSignature = [signalGroup.target methodSignatureForSelector:signalGroup.selector];
-            if (methodSignature == nil) {
-                NSString *info = [NSString stringWithFormat:@"method( %@ ) is not define", NSStringFromSelector(signalGroup.selector)];
-                [NSException raise:@"method crash" format:info, nil];
+            if (!self.isDestruction) {
+                NSMethodSignature *methodSignature = [signalGroup.target methodSignatureForSelector:signalGroup.selector];
+                if (methodSignature == nil) {
+                    NSString *info = [NSString stringWithFormat:@"method( %@ ) is not define", NSStringFromSelector(signalGroup.selector)];
+                    [NSException raise:@"method crash" format:info, nil];
+                }
+                NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+                invocation.selector = signalGroup.selector;
+                NSUInteger argsCount = methodSignature.numberOfArguments - 2;
+                NSUInteger count = MIN(argsCount, signalGroup.signalArray.count);
+                for (int i = 0; i < count; i++) {
+                    id result = [signalGroup.signalArray[i] result];
+                    if ([result isKindOfClass:[NSNull class]]) { result = nil; }
+                    [invocation setArgument:&result atIndex:i + 2];
+                }
+                [invocation invokeWithTarget:signalGroup.target];
+            } else {
+                NSLog(@"\n--> 当前SignalGroup被标记销毁,\n--> identifier:%@,\n--> 销毁原因:页面退出销毁 or 该SignalGroup的某个信号任务中未调用sendSignal:",self.identifier);
             }
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
-            invocation.selector = signalGroup.selector;
-            NSUInteger argsCount = methodSignature.numberOfArguments - 2;
-            NSUInteger count = MIN(argsCount, signalGroup.signalArray.count);
-            for (int i = 0; i < count; i++) {
-                id result = [signalGroup.signalArray[i] result];
-                if ([result isKindOfClass:[NSNull class]]) { result = nil; }
-                [invocation setArgument:&result atIndex:i + 2];
-            }
-            [invocation invokeWithTarget:signalGroup.target];
             [signalsDictionary removeObjectForKey:[(LXSignal *)object identifier]];
         }
         [object removeObserver:self forKeyPath:@"result" context:context];
     }
+}
+
+- (void)destructionSignal{
+    _isDestruction = true;
+    [self.signalArray enumerateObjectsUsingBlock:^(LXSignal * _Nonnull signal, NSUInteger idx, BOOL * _Nonnull stop) {
+        [signal sendSingle:nil];
+    }];
+    
 }
 
 

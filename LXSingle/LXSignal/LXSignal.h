@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong) NSString *identifier;
 
-+ (LXSignal *)createSingle:(void(^)(id<LXSubscriber> subscriber))task;
++ (instancetype)createSingle:(void(^)(id<LXSubscriber> subscriber))task;
 
 @property (nonatomic,copy) void(^task)(id<LXSubscriber> subscriber);
 

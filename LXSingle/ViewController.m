@@ -11,12 +11,6 @@
 
 @interface ViewController ()
 
-/** */
-@property (nonatomic,strong) NSString *name;
-
-/** */
-@property (nonatomic,copy) void(^block)(void);
-
 @end
 
 @implementation ViewController
@@ -26,27 +20,26 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
 }
-
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
-    LXSignal *single1 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [subscriber sendSingle:nil];
+    LXSignal *signal1 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [subscriber sendSingle:nil];
         });
     }];
-    LXSignal *single2 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    LXSignal *signal2 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [subscriber sendSingle:@"2"];
         });
     }];
-    LXSignal *single3 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    LXSignal *signal3 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [subscriber sendSingle:@"3"];
         });
     }];
     
-    [self singleWithSelector:@[single1,single2,single3] target:self notificationSelector:@selector(run:param2:param3:)];
-//
+    [self singleWithSelector:@[signal1,signal2,signal3] target:self notificationSelector:@selector(run:param2:param3:)];
+    
     NSLog(@"我就先下去了，拜拜");
 }
 
@@ -57,6 +50,10 @@
     NSLog(@"我跑了,%@,%@,%@",param1,param2,param3);
 }
 
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [self destructionSignal];
+}
 
 - (void)dealloc{
     NSLog(@"我释放了");

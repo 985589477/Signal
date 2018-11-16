@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "LXSignal.h"
+#import "LXGroupSubscriber.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LXSignalGroup : NSObject
+@interface LXSignalGroup : NSObject <LXGroupSubscriber>
 
 + (instancetype)groupWithSingles:(NSArray<LXSignal *> *)signals target:(id)target selector:(SEL)selector;
 
-@property (nonatomic,strong,readonly) NSString *identifier;
+@property (nonatomic,copy,readonly) NSString *identifier;
 
 @property (nonatomic,copy) NSArray<LXSignal *> *signalArray;
 
@@ -24,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong) id target;
 
 @property (nonatomic,assign) SEL selector;
+
+@property (nonatomic,assign,readonly) BOOL isDestruction;
 
 
 @end

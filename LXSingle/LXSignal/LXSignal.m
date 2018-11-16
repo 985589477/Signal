@@ -11,8 +11,8 @@
 #import "LXSignalGroup.h"
 @implementation LXSignal
 
-+ (LXSignal *)createSingle:(void (^)(id<LXSubscriber> _Nonnull))task{
-    LXSignal *single = [LXSignal new];
++ (instancetype)createSingle:(void (^)(id<LXSubscriber> _Nonnull))task{
+    LXSignal *single = [[self class] new];
     single.task = task;
     return single;
 }

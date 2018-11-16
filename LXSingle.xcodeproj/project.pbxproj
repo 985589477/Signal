@@ -39,6 +39,7 @@
 		C29377E6219A964200D19F78 /* NewViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewViewController.xib; sourceTree = "<group>"; };
 		C2937829219D788B00D19F78 /* LXSignalGroup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LXSignalGroup.h; sourceTree = "<group>"; };
 		C293782A219D788B00D19F78 /* LXSignalGroup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LXSignalGroup.m; sourceTree = "<group>"; };
+		C2937837219EA20700D19F78 /* LXGroupSubscriber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LXGroupSubscriber.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +97,7 @@
 				C293782A219D788B00D19F78 /* LXSignalGroup.m */,
 				C231EB7D2199499F008E1381 /* LXSignal.h */,
 				C231EB7E2199499F008E1381 /* LXSignal.m */,
+				C2937837219EA20700D19F78 /* LXGroupSubscriber.h */,
 				C231EB8C219A6D78008E1381 /* LXSubscriber.h */,
 			);
 			path = LXSignal;
