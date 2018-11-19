@@ -21,10 +21,37 @@
     
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    
+    [self signalQueue];
+}
+
+- (void)signalQueue{
+
+    [[[[LXSignal createSingle:^(id<LXSubscriber> subscriber) {
+        NSLog(@"我开始走了");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [subscriber sendSingle:@"1"];
+        });
+    }] doNext:^(id<LXSubscriber> subscriber, id result) {
+        NSLog(@"接受上一结果%@",result);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [subscriber sendSingle:@"2"];
+        });
+    }] doNext:^(id<LXSubscriber> subscriber, id result) {
+        NSLog(@"接受上一结果%@",result);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [subscriber sendSingle:@"3"];
+        });
+    }] finish:^(id result) {
+        NSLog(@"最终结果%@",result);
+    }];
+    NSLog(@"我先下去了，拜拜");
+}
+
+/**测试信号组*/
+- (void)signalGroup{
     LXSignal *signal1 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [subscriber sendSingle:nil];
+            [subscriber sendSingle:nil];
         });
     }];
     LXSignal *signal2 = [LXSignal createSingle:^(id<LXSubscriber>  _Nonnull subscriber) {

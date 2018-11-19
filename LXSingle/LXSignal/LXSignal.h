@@ -8,17 +8,26 @@
 
 #import <Foundation/Foundation.h>
 #import "LXSubscriber.h"
+
+typedef void(^SignalBlock)(id<LXSubscriber> subscriber);
+typedef void(^NextBlock)(id<LXSubscriber> subscriber, id result);
+typedef void(^FinishBlock)(id result);
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LXSignal : NSObject <LXSubscriber>
 
 @property (nonatomic,strong) NSString *identifier;
 
-+ (instancetype)createSingle:(void(^)(id<LXSubscriber> subscriber))task;
++ (instancetype)createSingle:(SignalBlock)task;
 
-@property (nonatomic,copy) void(^task)(id<LXSubscriber> subscriber);
+@property (nonatomic,copy) SignalBlock task;
 
 @property (nonatomic,strong) id result;
+
+- (LXSignal *)doNext:(NextBlock)next;
+
+- (void)finish:(FinishBlock)finish;
 
 @end
 

@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)singleWithSelector:(NSArray<LXSignal *> *)array target:(id)target notificationSelector:(SEL)selector;
 
 - (void)destructionSignal;
-//
+
 @end
 
 NS_ASSUME_NONNULL_END
